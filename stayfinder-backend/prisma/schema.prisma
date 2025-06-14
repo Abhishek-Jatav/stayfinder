@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  userId    Int
+  listingId Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  listing   Listing  @relation(fields: [listingId], references: [id])
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      String    @default("user")
+  listings  Listing[]
+  bookings  Booking[]
+  reviews   Review[]
+  favorites Favorite[]     // 👈 Explicit many-to-many
+}
+
+model Listing {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  location    String
+  price       Float
+  image       String
+  userId      Int
+
+  user        User      @relation(fields: [userId], references: [id])
+  bookings    Booking[]
+  reviews     Review[]
+  favoredBy   Favorite[]   // 👈 Explicit many-to-many
+}
+
+model Favorite {
+  userId    Int
+  listingId Int
+
+  user      User    @relation(fields: [userId], references: [id])
+  listing   Listing @relation(fields: [listingId], references: [id])
+
+  @@id([userId, listingId])  // Composite primary key
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  userId      Int
+  listingId   Int
+  startDate   DateTime
+  endDate     DateTime
+  totalPrice  Float
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  listing     Listing  @relation(fields: [listingId], references: [id])
+}

@@ -1,0 +1,43 @@
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/migrations/*/README.md
+
+# Next.js
+.next/
+/out/
+/.vercel/
+
+# NestJS
+/dist/
+/coverage/
+
+# IDEs & editors
+.vscode/
+.idea/
+
+# Build
+build/
+.cache/
+*.tsbuildinfo
