@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000', // local frontend (adjust port if needed)
-      'https://stayfinder-house.netlify.app', // deployed frontend
+      '', // deployed frontend
     ],
     credentials: true, // if you're using cookies or auth headers
   });
