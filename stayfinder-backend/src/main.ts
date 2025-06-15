@@ -5,14 +5,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: [
-      'http://localhost:3000', // Local frontend
-      'https://stayfinder-house.netlify.app', // Deployed Netlify frontend (no trailing slash)
-    ],
-    credentials: true, // Needed if frontend sends cookies or uses Authorization headers
+    origin: ['http://localhost:3000', 'https://stayfinder-house.netlify.app'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
   });
 
-  const PORT = process.env.PORT || 3000;
-  await app.listen(PORT);
+  const PORT = parseInt(process.env.PORT as string, 10) || 3000;
+  await app.listen(PORT, () => {
+    console.log(`🚀 Backend running on http://localhost:${PORT}`);
+  });
 }
 bootstrap();
