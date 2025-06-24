@@ -19,7 +19,7 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src"],                      // ✅ only compile this folder
+  "include": ["src", "prisma"],                      // ✅ only compile this folder
  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
  // ✅ explicitly exclude test files
 }

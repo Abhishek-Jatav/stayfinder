@@ -7,31 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Review {
-  id        Int      @id @default(autoincrement())
-  rating    Int
-  comment   String
-  userId    Int
-  listingId Int
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
-  listing   Listing  @relation(fields: [listingId], references: [id])
-}
-
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
-  role      String    @default("user")
-  listings  Listing[]
-  bookings  Booking[]
-  reviews   Review[]
-  favorites Favorite[]     // 👈 Explicit many-to-many
+  role      String     @default("user")
+  listings  Listing[]  // One-to-many with Listing
+  bookings  Booking[]  // One-to-many with Booking
+  reviews   Review[]   // One-to-many with Review
+  favorites Favorite[] // Many-to-many via Favorite
 }
 
 model Listing {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
   description String
   location    String
@@ -39,10 +27,35 @@ model Listing {
   image       String
   userId      Int
 
-  user        User      @relation(fields: [userId], references: [id])
-  bookings    Booking[]
-  reviews     Review[]
-  favoredBy   Favorite[]   // 👈 Explicit many-to-many
+  user        User       @relation(fields: [userId], references: [id])
+  bookings    Booking[]  // One-to-many with Booking
+  reviews     Review[]   // One-to-many with Review
+  favoredBy   Favorite[] // Many-to-many via Favorite
+}
+
+model Booking {
+  id          String     @id @default(uuid())
+  userId      Int
+  listingId   Int
+  startDate   DateTime
+  endDate     DateTime
+  totalPrice  Float
+  createdAt   DateTime   @default(now())
+
+  user        User       @relation(fields: [userId], references: [id])
+  listing     Listing    @relation(fields: [listingId], references: [id])
+}
+
+model Review {
+  id        Int       @id @default(autoincrement())
+  rating    Int
+  comment   String
+  userId    Int
+  listingId Int
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  listing   Listing   @relation(fields: [listingId], references: [id])
 }
 
 model Favorite {
@@ -52,18 +65,5 @@ model Favorite {
   user      User    @relation(fields: [userId], references: [id])
   listing   Listing @relation(fields: [listingId], references: [id])
 
-  @@id([userId, listingId])  // Composite primary key
-}
-
-model Booking {
-  id          String   @id @default(uuid())
-  userId      Int
-  listingId   Int
-  startDate   DateTime
-  endDate     DateTime
-  totalPrice  Float
-  createdAt   DateTime @default(now())
-
-  user        User     @relation(fields: [userId], references: [id])
-  listing     Listing  @relation(fields: [listingId], references: [id])
+  @@id([userId, listingId]) // Composite primary key
 }
